@@ -1,0 +1,17 @@
+{
+  "name": "signer-backend",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:purefiprotocol/signer-backend.git",
+  "author": "Ruslan Pakhlivanov <deadstone@list.ru>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node ./index.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "ethers": "^6.2.2",
+    "express": "^4.18.2"
+  }
+}

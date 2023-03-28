@@ -1,20 +1,22 @@
 # signer-backend
 
-## Scrips
+## Setup
+
+1. Install dependencies
 
 ```bash
-# install package
-$ yarn
-# run
-$ yarn start
+npm install
 ```
 
-### Request
+2. Create and set up .env file in the root folder using .env.sample as an example
+3. Run the app
 
-`POST /sign`
+```bash
+npm start
+```
 
-    curl -i -H 'Accept: application/json'
-    http://http://127.0.0.1:3000/sign
-    {
-      message: string
-    }
+## Example
+
+```bash
+curl -d '{"message":"test"}' -H "Content-Type: application/json" -H "Accept: application/json" -X POST http://localhost:5000/sign
+```

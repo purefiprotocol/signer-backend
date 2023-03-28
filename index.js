@@ -1,52 +1,60 @@
 import express from 'express';
-import { Wallet, JsonRpcProvider } from 'ethers';
 import bodyParser from 'body-parser';
+import { Wallet } from 'ethers';
+import * as dotenv from 'dotenv';
 
-const port = 3000;
-const app = express();
-app.use(bodyParser.json())
+dotenv.config();
 
-const sign = async (message) => {
-  const provider = new JsonRpcProvider(
-    "https://bsc-dataseed1.binance.org",
-    {
-      chainId: 56,
-      name: "bsc-mainnet",
-    }
+const PORT = process.env.PORT || 5000;
+const SIGNER_PRIVATE_KEY = process.env.SIGNER_PRIVATE_KEY;
+
+if (!SIGNER_PRIVATE_KEY) {
+  throw new Error(
+    'Create and set up .env file in the root folder using .env.sample as an example'
   );
-  const privateKey = '0c25287fba0ccfbdf242d749ee0709ceb185f17b6c9877b9bdd47cc7929cccb4';
-  
-  const signer = new Wallet(privateKey, provider);
-  const signature = await signer.signMessage(message);
-
-  return {
-    message,
-    signature,
-  }
 }
-app.get('/', (req, res) => res.send('Is working'))
+
+const signer = new Wallet(SIGNER_PRIVATE_KEY);
+
+const app = express();
+
+app.use(bodyParser.json());
+
+app.get('/', (req, res) =>
+  res.json({
+    success: true,
+  })
+);
 
 app.post('/sign', async (req, res) => {
   const message = req?.body?.message;
 
-  if(!message) {
-    res.status(400).send('message: required');
-    return;
+  if (!message) {
+    return res.status(400).json({
+      error: 'message required',
+    });
   }
 
-  if(typeof message !== 'string') {
-    res.status(400).send('message: type must be string');
-    return;
+  if (typeof message !== 'string') {
+    return res.status(400).json({
+      error: 'message must be a string',
+    });
   }
 
   try {
-    const result = await sign(message);
-    res.status(200).send(result);
-  }catch(err) {
-    res.status(400).send(err);
+    const signature = await signer.signMessage(message);
+    const response = {
+      message,
+      signature,
+    };
+    return res.status(200).json(response);
+  } catch (err) {
+    return res.status(400).json({
+      error: err.message,
+    });
   }
-})
+});
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+app.listen(PORT, () => {
+  console.log(`Signer backend app is listening on port ${PORT}`);
+});

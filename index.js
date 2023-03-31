@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import bodyParser from 'body-parser';
 import { Wallet } from 'ethers';
 import * as dotenv from 'dotenv';
@@ -18,6 +19,7 @@ const signer = new Wallet(SIGNER_PRIVATE_KEY);
 
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.json());
 
 app.get('/', (req, res) =>

@@ -1,5 +1,7 @@
 # signer-backend
-This repository contains the code for a backend application that signs messages using the ethers library. The application provides a single endpoint for signing messages using a specified private key.
+
+This repository contains the code for a backend application that signs messages using the viem library.
+The application provides a single endpoint for signing messages using a specified private key.
 
 ## Installation and Setup
 
@@ -8,9 +10,11 @@ Clone the repository to your local machine:
 ```bash
 git clone https://github.com/purefiprotocol/signer-backend.git
 ```
+
 Navigate to the project directory:
+
 ```bash
-cd ethers-signer-backend
+cd signer-backend
 ```
 
 Create a .env file in the project's root directory based on the .env.sample:
@@ -47,10 +51,14 @@ http://localhost:5000/sign
 Here is an example cURL request for signing a message:
 
 ```bash
-curl -d '{"message":"test"}' -H "Content-Type: application/json" -H "Accept: application/json" -X POST http://localhost:5000/sign
+curl 'http://localhost:5000/sign' \
+  -H 'Accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{"chainId":11155111,"payload":{"packageType":"32","ruleId":"431050","from":"0x0000000000000000000000000000000000000000","to":"0x0000000000000000000000000000000000000000","tokenData0":{"address":"0x0000000000000000000000000000000000000000","value":"1000000000000000","decimals":"18"}}}'
 ```
 
-The application will sign the provided message using the private key specified in the .env file and return the signature in JSON format.
+The application will sign the provided payload in EIP-712 fashion using the private key specified in the .env file and return the result message and signature in JSON format.
 
-License
+### License
+
 This project is licensed under the terms of the MIT License. For more information, see the LICENSE file.

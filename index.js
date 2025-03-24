@@ -1,7 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import { Wallet } from 'ethers';
+import { privateKeyToAccount } from 'viem/accounts';
+import { createDomain, createRuleV5Types } from '@purefi/verifier-sdk';
+
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -15,7 +17,7 @@ if (!SIGNER_PRIVATE_KEY) {
   );
 }
 
-const signer = new Wallet(SIGNER_PRIVATE_KEY);
+const walletAccount = privateKeyToAccount(SIGNER_PRIVATE_KEY);
 
 const app = express();
 
@@ -29,26 +31,52 @@ app.get('/', (req, res) =>
 );
 
 app.post('/sign', async (req, res) => {
-  const message = req?.body?.message;
+  const payload = req?.body?.payload;
+  const chainId = req?.body?.chainId;
 
-  if (!message) {
+  if (!payload) {
     return res.status(400).json({
-      error: 'message required',
+      error: 'payload required',
     });
   }
 
-  if (typeof message !== 'string') {
+  if (!chainId) {
     return res.status(400).json({
-      error: 'message must be a string',
+      error: 'chainId required',
     });
   }
 
   try {
-    const signature = await signer.signMessage(message);
+    const address = walletAccount.address;
+
+    const message = {
+      account: {
+        address,
+      },
+      chain: {
+        id: chainId.toString(),
+      },
+      payload,
+    };
+
+    const domain = createDomain('PureFi', chainId.toString());
+
+    const types = createRuleV5Types(payload);
+
+    const primaryType = 'Data';
+
+    const signature = await walletAccount.signTypedData({
+      domain,
+      types,
+      primaryType,
+      message,
+    });
+
     const response = {
       message,
       signature,
     };
+
     return res.status(200).json(response);
   } catch (err) {
     return res.status(400).json({

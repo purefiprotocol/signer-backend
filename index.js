@@ -8,7 +8,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 const SIGNER_PRIVATE_KEY = process.env.SIGNER_PRIVATE_KEY;
 
 if (!SIGNER_PRIVATE_KEY) {

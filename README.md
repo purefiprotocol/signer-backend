@@ -31,27 +31,40 @@ Add your private key to the .env file under the name SIGNER_PRIVATE_KEY. This ke
 npm install
 ```
 
-Running the Application
-Execute the following command to start the backend application:
+## Generate private and public keys in case you need
+
+Set (onchain) public key on PureFi Dashboard on Management tab at https://stage.dashboard.purefi.io/subscription
+
+Set private key in .env file under the name SIGNER_PRIVATE_KEY for this application
+
+#### REMINDER: do not forget to save the keys!!!
+
+```bash
+npm run generate:keys
+```
+
+### Running the Application
+
+Execute the following command to start the backend application
 
 ```bash
 npm run start
 ```
 
-The application will run on port 5000.
+The application will run on port 4000.
 
 ### Usage
 
 To sign a message, send a POST request to the following URL:
 
 ```bash
-http://localhost:5000/sign
+http://localhost:4000/sign
 ```
 
 Here is an example cURL request for signing a message:
 
 ```bash
-curl 'http://localhost:5000/sign' \
+curl 'http://localhost:4000/sign' \
   -H 'Accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{"chainId":11155111,"payload":{"packageType":"32","ruleId":"431050","from":"0x0000000000000000000000000000000000000000","to":"0x0000000000000000000000000000000000000000","tokenData0":{"address":"0x0000000000000000000000000000000000000000","value":"1000000000000000","decimals":"18"}}}'
